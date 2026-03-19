@@ -11,23 +11,20 @@ jobs:
     runs-on: ubuntu-latest
     name: Run build
     steps:
-      # Checkout the repo
+
       - uses: actions/checkout@v2
 
-      # Install .NET 9 SDK with Roslyn 5.3+ to match analyzer requirements
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 9.0.100-rc.3
+          dotnet-version: '9.0.x'   # install latest .NET 9 SDK patch release
 
-      # Restore dependencies
       - name: Restore dependencies
         run: dotnet restore
 
-      # Build the solution
       - name: Build
         run: dotnet build --no-restore
 
-      # Optional: run tests if needed
+      # Optional: run tests
       # - name: Test
       #   run: dotnet test --no-build --verbosity normal
