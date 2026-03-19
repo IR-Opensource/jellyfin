@@ -3,39 +3,31 @@ name: .NET Build Jellyfin
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout repo
       - uses: actions/checkout@v3
 
-      # Install SDK
+      # Install .NET SDK (latest 9.x is fine)
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0.312'
+          dotnet-version: '9.0.x'
 
-      # 🚨 Force dotnet to use installed SDK (CRITICAL)
-      - name: Force SDK
-        run: echo "DOTNET_ROOT=$HOME/.dotnet" >> $GITHUB_ENV
-
-      # Debug (you NEED this now)
-      - name: Debug SDK
-        run: |
-          which dotnet
-          dotnet --version
-          dotnet --list-sdks
-          dotnet --info
-
-      # Clean everything (important)
+      # Clean (prevents stale analyzer DLL issues)
       - name: Clean
-        run: |
-          dotnet clean
-          rm -rf **/bin **/obj
+        run: dotnet clean
 
+      # Restore dependencies
       - name: Restore
         run: dotnet restore
 
+      # Build (will NOT load analyzer in CI)
       - name: Build
         run: dotnet build --no-restore
