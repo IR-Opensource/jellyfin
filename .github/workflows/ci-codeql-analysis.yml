@@ -3,6 +3,9 @@ name: .NET Build Jellyfin
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -10,27 +13,22 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Install a compatible .NET SDK
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0.401'  # Must match global.json
+          dotnet-version: '9.0.312'  # confirmed available SDK
 
-      # Optional: verify SDK and compiler version
-      - name: Check .NET version
+      - name: Check .NET SDK
         run: |
           dotnet --version
           dotnet --list-sdks
           dotnet --info
 
-      # Clean old builds
-      - name: Clean
+      - name: Clean solution
         run: dotnet clean
 
-      # Restore dependencies
-      - name: Restore
+      - name: Restore dependencies
         run: dotnet restore
 
-      # Build the solution
       - name: Build
         run: dotnet build --no-restore
