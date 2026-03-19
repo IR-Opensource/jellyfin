@@ -11,24 +11,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      # Checkout repo
+      - uses: actions/checkout@v3
 
+      # Install SDK that matches global.json
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0.312'  # confirmed available SDK
+          dotnet-version: '9.0.312'
 
-      - name: Check .NET SDK
+      # Verify correct SDK is being used (important for debugging)
+      - name: Verify .NET SDK
         run: |
           dotnet --version
           dotnet --list-sdks
           dotnet --info
 
-      - name: Clean solution
+      # Clean previous builds (prevents stale analyzer issues)
+      - name: Clean
         run: dotnet clean
 
-      - name: Restore dependencies
+      # Restore dependencies
+      - name: Restore
         run: dotnet restore
 
+      # Build (analyzers should now work)
       - name: Build
         run: dotnet build --no-restore
