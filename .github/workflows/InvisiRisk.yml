@@ -1,4 +1,4 @@
-name: .NET Build Jellyfin
+name: .NET Build Jellyfin x InvisiRisk
 
 on:
   workflow_dispatch:
