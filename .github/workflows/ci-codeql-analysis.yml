@@ -9,19 +9,23 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Run build
-    steps:
+    name: Build Jellyfin
 
+    steps:
+      # Checkout the repository
       - uses: actions/checkout@v2
 
+      # Install .NET 9 SDK pinned via global.json
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0.x'   # install latest .NET 9 SDK patch release
+          dotnet-version: '9.0.312'
 
+      # Restore dependencies
       - name: Restore dependencies
         run: dotnet restore
 
+      # Build all projects; analyzers will run properly now
       - name: Build
         run: dotnet build --no-restore
 
