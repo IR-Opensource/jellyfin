@@ -1,34 +1,36 @@
-name: .NET Build xx IR
+name: .NET Build Jellyfin
 
 on:
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build Jellyfin
 
     steps:
-      # Checkout the repository
       - uses: actions/checkout@v2
 
-      # Install .NET 9 SDK pinned via global.json
+      # Install a compatible .NET SDK
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0.312'
+          dotnet-version: '9.0.401'  # Must match global.json
+
+      # Optional: verify SDK and compiler version
+      - name: Check .NET version
+        run: |
+          dotnet --version
+          dotnet --list-sdks
+          dotnet --info
+
+      # Clean old builds
+      - name: Clean
+        run: dotnet clean
 
       # Restore dependencies
-      - name: Restore dependencies
+      - name: Restore
         run: dotnet restore
 
-      # Build all projects; analyzers will run properly now
+      # Build the solution
       - name: Build
         run: dotnet build --no-restore
-
-      # Optional: run tests
-      # - name: Test
-      #   run: dotnet test --no-build --verbosity normal
